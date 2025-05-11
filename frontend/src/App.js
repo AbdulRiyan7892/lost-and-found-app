@@ -199,6 +199,7 @@ function ReportItem({ token, onLogout }) {
     });
 
     if (res.ok) navigate(`/${form.type}`);
+    else alert("❌ Failed to report item.");
   };
 
   return (
