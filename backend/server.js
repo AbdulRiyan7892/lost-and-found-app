@@ -7,7 +7,7 @@ const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 
 const Item = require("./item");
-const User = require("./user");
+const User = require("./User");
 
 const app = express();
 const PORT = 5000;
