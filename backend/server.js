@@ -93,7 +93,8 @@ app.get("/api/items", async (req, res) => {
 // Post new item (only logged-in users)
 app.post("/api/items", auth, upload.single("image"), async (req, res) => {
   const { title, description, type, location, contact } = req.body;
-  const imageUrl = req.file ? `/uploads/${req.file.filename}` : null;
+  const imageUrl = req.file ? `https://lost-and-found-app-1.onrender.com/uploads/${req.file.filename}` : null;
+
 
   const newItem = new Item({
     title,
