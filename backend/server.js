@@ -39,7 +39,7 @@ app.use(cors());
 app.use(express.json());
 
 // MongoDB Atlas connection
-mongoose.connect(process.env.MONGO_URI || "your_mongo_uri", {
+mongoose.connect(process.env.MONGO_URI || "mongodb+srv://abdulriyan062:<gFv86I0pPJ2cVK8L>@ar.w0ay8z9.mongodb.net/?retryWrites=true&w=majority&appName=AR", {
   useNewUrlParser: true,
   useUnifiedTopology: true,
 })
