@@ -5,6 +5,10 @@ const multer = require("multer");
 const path = require("path");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
+require("dotenv").config();
+
+const cloudinary = require("cloudinary").v2;
+const { CloudinaryStorage } = require("multer-storage-cloudinary");
 
 const Item = require("./item");
 const User = require("./User");
@@ -13,30 +17,39 @@ const app = express();
 const PORT = process.env.PORT || 5000;
 const JWT_SECRET = process.env.JWT_SECRET || "your_secret_key";
 
+// Cloudinary config
+cloudinary.config({
+  cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
+  api_key: process.env.CLOUDINARY_API_KEY,
+  api_secret: process.env.CLOUDINARY_API_SECRET,
+});
+
+// Storage config
+const storage = new CloudinaryStorage({
+  cloudinary,
+  params: {
+    folder: "lost_found_items",
+    allowed_formats: ["jpg", "jpeg", "png"],
+  },
+});
+const upload = multer({ storage });
+
 // Middleware
 app.use(cors());
 app.use(express.json());
-app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 
 // MongoDB Atlas connection
-
-const uri = "mongodb+srv://abdulriyan062:gFv86I0pPJ2cVK8L@ar.w0ay8z9.mongodb.net/lostfound?retryWrites=true&w=majority&appName=AR";
-
-mongoose.connect(uri, {
+mongoose.connect(process.env.MONGO_URI || "your_mongo_uri", {
   useNewUrlParser: true,
   useUnifiedTopology: true,
 })
 .then(() => {
   console.log("✅ Connected to MongoDB Atlas via Mongoose");
-
-  // Start server **only after successful DB connection**
   app.listen(PORT, () => {
     console.log(`🚀 Server running on http://localhost:${PORT}`);
   });
 })
-.catch((err) => {
-  console.error("❌ MongoDB connection error:", err);
-});
+.catch((err) => console.error("❌ MongoDB connection error:", err));
 
 // Auth middleware
 const auth = (req, res, next) => {
@@ -50,15 +63,6 @@ const auth = (req, res, next) => {
     res.status(401).json({ error: "Invalid token" });
   }
 };
-
-// Multer config
-const storage = multer.diskStorage({
-  destination: "uploads/",
-  filename: (req, file, cb) => {
-    cb(null, Date.now() + "-" + file.originalname);
-  },
-});
-const upload = multer({ storage });
 
 // Register
 app.post("/api/register", async (req, res) => {
@@ -90,11 +94,10 @@ app.get("/api/items", async (req, res) => {
   res.json(items);
 });
 
-// Post new item (only logged-in users)
+// Post new item
 app.post("/api/items", auth, upload.single("image"), async (req, res) => {
   const { title, description, type, location, contact } = req.body;
-  const imageUrl = req.file ? `https://lost-and-found-app-1.onrender.com/uploads/${req.file.filename}` : null;
-
+  const imageUrl = req.file ? req.file.path : null;
 
   const newItem = new Item({
     title,
@@ -111,7 +114,7 @@ app.post("/api/items", auth, upload.single("image"), async (req, res) => {
   res.status(201).json(newItem);
 });
 
-// Delete item (only by reporter)
+// Delete item
 app.delete("/api/items/:id", auth, async (req, res) => {
   const item = await Item.findById(req.params.id);
   if (!item || item.userId.toString() !== req.user.userId) {
@@ -120,9 +123,4 @@ app.delete("/api/items/:id", auth, async (req, res) => {
 
   await item.deleteOne();
   res.json({ message: "Item deleted" });
-});
-
-// Start server
-app.listen(PORT, () => {
-  console.log(`🚀 Server running on http://localhost:${PORT}`);
 });
