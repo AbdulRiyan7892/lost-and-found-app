@@ -3,7 +3,7 @@ import './App.css';
 import { BrowserRouter as Router, Routes, Route, Navigate, Link, useNavigate } from "react-router-dom";
 import { FaHome, FaSignOutAlt } from "react-icons/fa";
 
-const API_URL = "http://localhost:5000";
+const API_URL = "https://lost-and-found-app-1.onrender.com";
 
 // Navbar component
 function Navbar({ onLogout }) {
