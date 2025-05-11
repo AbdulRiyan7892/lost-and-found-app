@@ -15,13 +15,13 @@ const User = require("./User");
 
 const app = express();
 const PORT = process.env.PORT || 5000;
-const JWT_SECRET = process.env.JWT_SECRET || "your_secret_key";
+const JWT_SECRET = process.env.JWT_SECRET || "fb41ad58592b8fbe2b5f320c3bf66711";
 
 // Cloudinary config
 cloudinary.config({
-  cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
-  api_key: process.env.CLOUDINARY_API_KEY,
-  api_secret: process.env.CLOUDINARY_API_SECRET,
+  cloud_name: process.env.df7xdzqdp,
+  api_key: process.env.838941687762887,
+  api_secret: process.env.54L3ws4BycqdggUTRx4FgEDIzM8,
 });
 
 // Storage config
