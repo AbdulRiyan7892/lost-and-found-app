@@ -20,7 +20,7 @@ app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 
 // MongoDB Atlas connection
 mongoose
-  .connect("mongodb+srv://abdulriyan062:<db_password>@ar.w0ay8z9.mongodb.net/lostfound?retryWrites=true&w=majority&appName=AR", {
+  .connect("mongodb+srv://abdulriyan062:<11>@ar.w0ay8z9.mongodb.net/?retryWrites=true&w=majority&appName=AR", {
     useNewUrlParser: true,
     useUnifiedTopology: true,
   })
