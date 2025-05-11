@@ -19,16 +19,32 @@ app.use(express.json());
 app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 
 // MongoDB Atlas connection
-mongoose
-  .connect("mongodb+srv://abdulriyan062:<11>@ar.w0ay8z9.mongodb.net/?retryWrites=true&w=majority&appName=AR", {
-    useNewUrlParser: true,
-    useUnifiedTopology: true,
-  })
-  .then(() => console.log("✅ Connected to MongoDB Atlas"))
-  .catch((err) => {
-    console.error("❌ MongoDB connection error:", err);
-    process.exit(1);
-  });
+
+const { MongoClient, ServerApiVersion } = require('mongodb');
+const uri = "mongodb+srv://abdulriyan062:<gFv86I0pPJ2cVK8L>@ar.w0ay8z9.mongodb.net/?retryWrites=true&w=majority&appName=AR";
+
+// Create a MongoClient with a MongoClientOptions object to set the Stable API version
+const client = new MongoClient(uri, {
+  serverApi: {
+    version: ServerApiVersion.v1,
+    strict: true,
+    deprecationErrors: true,
+  }
+});
+
+async function run() {
+  try {
+    // Connect the client to the server	(optional starting in v4.7)
+    await client.connect();
+    // Send a ping to confirm a successful connection
+    await client.db("admin").command({ ping: 1 });
+    console.log("Pinged your deployment. You successfully connected to MongoDB!");
+  } finally {
+    // Ensures that the client will close when you finish/error
+    await client.close();
+  }
+}
+run().catch(console.dir);
 
 // Auth middleware
 const auth = (req, res, next) => {
