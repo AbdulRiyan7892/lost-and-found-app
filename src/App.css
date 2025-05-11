@@ -1,0 +1,123 @@
+/* General Body Styling */
+body {
+  margin: 0;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background: #f4f6f8;
+  color: #333;
+}
+
+/* Container Styling */
+.container {
+  max-width: 600px;
+  margin: 40px auto;
+  padding: 20px;
+  background: #ffffff;
+  border-radius: 12px;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+}
+
+/* Navbar */
+.navbar {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 20px;
+}
+
+/* Navbar Buttons */
+.nav-button {
+  background-color: #1976d2;
+  color: white;
+  border: none;
+  padding: 10px 14px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 16px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  transition: background-color 0.3s ease;
+}
+
+.nav-button:hover {
+  background-color: #1565c0;
+}
+
+/* Section Buttons (Home Page) */
+.section-buttons {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  margin-top: 20px;
+}
+
+.section-button {
+  text-align: center;
+  text-decoration: none;
+  padding: 12px;
+  font-size: 18px;
+  border-radius: 8px;
+  color: white;
+  transition: background-color 0.3s ease;
+}
+
+.section-button.lost {
+  background-color: #f44336;
+}
+
+.section-button.found {
+  background-color: #4caf50;
+}
+
+.section-button.report {
+  background-color: #2196f3;
+}
+
+.section-button:hover {
+  opacity: 0.9;
+}
+
+/* Form Inputs */
+input, textarea, select {
+  width: 100%;
+  padding: 10px;
+  margin-top: 10px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  font-size: 16px;
+}
+
+/* Form Button */
+button {
+  background-color: #1976d2;
+  color: white;
+  padding: 10px 16px;
+  margin-top: 20px;
+  border: none;
+  border-radius: 8px;
+  font-size: 16px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+button:hover {
+  background-color: #115293;
+}
+
+/* List Styling */
+ul {
+  list-style: none;
+  padding: 0;
+}
+
+li {
+  background-color: #f9f9f9;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  padding: 15px;
+  margin-bottom: 10px;
+}
+
+li img {
+  margin-top: 10px;
+  border-radius: 6px;
+}

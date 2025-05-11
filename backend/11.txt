@@ -1,0 +1,272 @@
+//backend
+//server.js
+const express = require("express");
+const mongoose = require("mongoose");
+const cors = require("cors");
+const multer = require("multer");
+const path = require("path");
+
+const Item = require("./item"); // Use correct relative path
+
+const app = express();
+const PORT = 5000;
+
+
+app.use(cors());
+app.use("/uploads", express.static(path.join(__dirname, "uploads"))); // Serve static files
+
+// ⚠️ Only use express.json() after setting up multer route, or exclude it if using only multipart/form-data
+// app.use(express.json()); <- Don't use this before multer file route
+
+// MongoDB connection
+mongoose.connect("mongodb://127.0.0.1:27017/lostfound", {
+  useNewUrlParser: true,
+  useUnifiedTopology: true,
+});
+
+// Multer config
+const storage = multer.diskStorage({
+  destination: "uploads/",
+  filename: (req, file, cb) => {
+    cb(null, Date.now() + "-" + file.originalname);
+  },
+});
+const upload = multer({ dest: 'uploads/' }); 
+
+// GET route
+app.get("/api/items", async (req, res) => {
+  try {
+    const items = await Item.find();
+    res.json(items);
+  } catch (err) {
+    res.status(500).json({ error: "Failed to fetch items" });
+  }
+});
+
+// POST route (image upload for "found" items)
+app.post('/api/items', upload.single('image'),async (req, res) => {
+  try {
+    // Multer parses body and file
+    const { title, description, type, location, contact } = req.body; // Now req.body should be defined
+    const imageUrl = req.file ? `/uploads/${req.file.filename}` : null;
+   
+
+    const newItem = new Item({ title, description, type, location, contact, imageUrl });
+    await newItem.save();
+
+    res.status(201).json(newItem);
+  } 
+   catch (err) {
+    console.error("Upload failed:", err);
+    res.status(500).json({ message: "Upload failed" });
+  }
+});
+app.delete("/api/items/:id", async (req, res) => {
+  try {
+    await Item.findByIdAndDelete(req.params.id);
+    res.status(200).json({ message: "Item deleted" });
+  } catch (err) {
+    res.status(500).json({ error: "Failed to delete item" });
+  }
+});
+
+
+
+// Start server
+app.listen(PORT, () => {
+  console.log(`🚀 Server running at http://localhost:${PORT}`);
+});
+///frontend
+//App.js
+import React, { useState, useEffect } from "react";
+import "./App.css";
+
+function App() {
+  const [items, setItems] = useState([]);
+  const [form, setForm] = useState({
+    title: "",
+    description: "",
+    type: "lost",
+    location: "",
+    contact: "",
+  });
+  const [image, setImage] = useState(null);
+
+  // Fetch items on load
+  useEffect(() => {
+    fetch("http://localhost:5000/api/items")
+      .then(res => res.json())
+      .then(data => {
+        if (Array.isArray(data)) setItems(data);
+        else console.error("Unexpected data format:", data);
+      })
+      .catch(err => console.error("Error fetching items:", err));
+  }, []);
+
+  // Handle input change
+  const handleChange = (e) => {
+    setForm({ ...form, [e.target.name]: e.target.value });
+  };
+
+  // Submit form
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    const formData = new FormData();
+    Object.entries(form).forEach(([key, val]) => formData.append(key, val));
+    if (form.type === "found" && image) {
+      formData.append("image", image);
+    }
+
+    fetch("http://localhost:5000/api/items", {
+      method: "POST",
+      body: formData,
+    })
+      .then(async res => {
+        if (!res.ok) {
+          const errorText = await res.text();
+          throw new Error(`Server error: ${res.status} - ${errorText}`);
+        }
+        return res.json();
+      })
+      .then(data => {
+        setItems([data, ...items]);
+        setForm({ title: "", description: "", type: "lost", location: "", contact: "" });
+        setImage(null);
+      })
+      .catch(err => console.error("Error submitting item:", err));
+  };
+
+  // Handle delete
+  const handleDelete = (id) => {
+    const confirmDelete = window.confirm("Are you sure you want to delete this item?");
+    if (!confirmDelete) return;
+
+    fetch(`http://localhost:5000/api/items/${id}`, {
+      method: "DELETE",
+    })
+      .then(res => {
+        if (!res.ok) throw new Error("Failed to delete item");
+        setItems(items.filter(item => item._id !== id));
+      })
+      .catch(err => console.error("Error deleting item:", err));
+  };
+
+  return (
+    <div className="container">
+      <h1>🎒 Campus Lost and Found</h1>
+
+      <form onSubmit={handleSubmit} className="form">
+        <input name="title" placeholder="Item Title" value={form.title} onChange={handleChange} required />
+        <textarea name="description" placeholder="Description" value={form.description} onChange={handleChange} required />
+        <input name="location" placeholder="Location" value={form.location} onChange={handleChange} required />
+        <input name="contact" placeholder="Contact Info" value={form.contact} onChange={handleChange} required />
+
+        <select name="type" value={form.type} onChange={handleChange}>
+          <option value="lost">Lost</option>
+          <option value="found">Found</option>
+        </select>
+
+        {form.type === "found" && (
+          <input type="file" name="image" accept="image/*" onChange={(e) => setImage(e.target.files[0])} />
+        )}
+
+        <button type="submit">Submit</button>
+      </form>
+
+      <h2>📋 Listed Items</h2>
+      <ul className="item-list">
+        {items.map((item) => (
+          <li key={item._id} className={`item ${item.type}`}>
+            <strong>{item.type?.toUpperCase?.() || "UNKNOWN"}:</strong> {item.title}
+            <br />
+            <em>{item.description}</em><br />
+            📍 {item.location} <br />
+            📞 {item.contact} <br />
+            {item.imageUrl && <img src={`http://localhost:5000${item.imageUrl}`} alt="Item" width="150" />}<br />
+            <button onClick={() => handleDelete(item._id)}>🗑️ Delete</button>
+          </li>
+        ))}
+      </ul>
+    </div>
+  );
+}
+
+export default App;
+//App.css
+.container {
+  max-width: 600px;
+  margin: auto;
+  padding: 20px;
+  font-family: 'Segoe UI', sans-serif;
+  background-color: #f9f9ff;
+  border-radius: 10px;
+  box-shadow: 0 0 10px rgba(0,0,0,0.1);
+}
+
+
+h1, h2 {
+  color: #333;
+  text-align: center;
+}
+
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+input, textarea, select {
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  font-size: 1em;
+}
+
+button {
+  background-color: #4CAF50;
+  color: white;
+  padding: 10px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+button:hover {
+  background-color: #45a049;
+}
+
+.item-list {
+  list-style-type: none;
+  padding: 0;
+}
+
+.item {
+  padding: 10px;
+  margin-top: 10px;
+  border-radius: 5px;
+  font-size: 1em;
+}
+
+.item.lost {
+  background-color: #ffecec;
+  border-left: 5px solid red;
+}
+
+.item.found {
+  background-color: #e7ffe7;
+  border-left: 5px solid green;
+}
+//item.js
+// item.js (place in backend folder, or use a relative path like ./models/item.js)
+const mongoose = require("mongoose");
+
+const itemSchema = new mongoose.Schema({
+  title: { type: String, required: true },
+  description: String,
+  type: { type: String, enum: ["lost", "found"], required: true },
+  location: String,
+  contact: String,
+  imageUrl: String,
+}, { timestamps: true });
+
+module.exports = mongoose.model("Item", itemSchema);

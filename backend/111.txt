@@ -1,0 +1,408 @@
+import Register from "./Register";
+import React, { useState, useEffect } from "react";
+import { jwtDecode } from "jwt-decode";
+
+import "./App.css";
+
+function App() {
+  const [items, setItems] = useState([]);
+  const [form, setForm] = useState({
+    title: "",
+    description: "",
+    type: "lost",
+    location: "",
+    contact: "",
+  });
+  const [image, setImage] = useState(null);
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [userId, setUserId] = useState("");
+  const [showRegister, setShowRegister] = useState(false);
+
+  useEffect(() => {
+    fetch("http://localhost:5000/api/items")
+      .then(res => res.json())
+      .then(data => {
+        if (Array.isArray(data)) setItems(data);
+      })
+      .catch(err => console.error("Error fetching items:", err));
+  }, []);
+
+  const handleChange = (e) => {
+    setForm({ ...form, [e.target.name]: e.target.value });
+  };
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+
+    const token = localStorage.getItem("token");
+    if (!token) {
+      alert("You must be logged in to submit.");
+      return;
+    }
+
+    const formData = new FormData();
+    Object.entries(form).forEach(([key, val]) => formData.append(key, val));
+    if (form.type === "found" && image) {
+      formData.append("image", image);
+    }
+
+    fetch("http://localhost:5000/api/items", {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+      body: formData,
+    })
+      .then(res => res.json())
+      .then(data => {
+        setItems([data, ...items]);
+        setForm({ title: "", description: "", type: "lost", location: "", contact: "" });
+        setImage(null);
+      })
+      .catch(err => console.error("Error submitting item:", err));
+  };
+
+  const handleDelete = (id) => {
+    const token = localStorage.getItem("token");
+    fetch(`http://localhost:5000/api/items/${id}`, {
+      method: "DELETE",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+    })
+      .then(res => {
+        if (!res.ok) throw new Error("Failed to delete item");
+        setItems(items.filter(item => item._id !== id));
+      })
+      .catch(err => console.error("Error deleting item:", err));
+  };
+
+  const handleLogin = async (e) => {
+    e.preventDefault();
+    const username = e.target.username.value;
+    const password = e.target.password.value;
+
+    const res = await fetch("http://localhost:5000/api/login", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ username, password }),
+    });
+
+    const data = await res.json();
+    if (res.ok) {
+      localStorage.setItem("token", data.token);
+      const decoded = jwtDecode(data.token);
+
+      setUserId(decoded.id);
+      setIsLoggedIn(true);
+    } else {
+      alert(data.error || "Login failed");
+    }
+  };
+
+  const handleLogout = () => {
+    localStorage.removeItem("token");
+    setIsLoggedIn(false);
+    setUserId("");
+  };
+
+  if (!isLoggedIn) {
+    return showRegister ? (
+      <Register onRegisterSuccess={() => setShowRegister(false)} />
+    ) : (
+      <div className="auth-container">
+        <h2>Login</h2>
+        <form onSubmit={handleLogin} className="form">
+          <input name="username" placeholder="Username" required />
+          <input name="password" type="password" placeholder="Password" required />
+          <button type="submit">Login</button>
+        </form>
+        <p>
+          Don't have an account?{" "}
+          <button onClick={() => setShowRegister(true)}>Register</button>
+        </p>
+      </div>
+    );
+  }
+
+  return (
+    <div className="container">
+      <h1>🎒 Campus Lost and Found</h1>
+      <button onClick={handleLogout}>🔒 Logout</button>
+
+      <form onSubmit={handleSubmit} className="form">
+        <input name="title" placeholder="Item Title" value={form.title} onChange={handleChange} required />
+        <textarea name="description" placeholder="Description" value={form.description} onChange={handleChange} required />
+        <input name="location" placeholder="Location" value={form.location} onChange={handleChange} required />
+        <input name="contact" placeholder="Contact Info" value={form.contact} onChange={handleChange} required />
+        <select name="type" value={form.type} onChange={handleChange}>
+          <option value="lost">Lost</option>
+          <option value="found">Found</option>
+        </select>
+        {form.type === "found" && (
+          <input type="file" name="image" accept="image/*" onChange={(e) => setImage(e.target.files[0])} />
+        )}
+        <button type="submit">Submit</button>
+      </form>
+
+      <h2>📋 Listed Items</h2>
+      <ul className="item-list">
+        {items.map((item) => (
+          <li key={item._id} className={`item ${item.type}`}>
+            <strong>{item.type?.toUpperCase() || "UNKNOWN"}:</strong> {item.title}
+            <br />
+            <em>{item.description}</em><br />
+            📍 {item.location} <br />
+            📞 {item.contact} <br />
+            {item.imageUrl && <img src={`http://localhost:5000${item.imageUrl}`} alt="Item" width="150" />}<br />
+            {item.user && item.user === userId && (
+              <button onClick={() => handleDelete(item._id)}>🗑️ Delete</button>
+            )}
+          </li>
+        ))}
+      </ul>
+    </div>
+  );
+}
+
+export default App;
+.container {
+  max-width: 600px;
+  margin: auto;
+  padding: 20px;
+  font-family: 'Segoe UI', sans-serif;
+  background-color: #f9f9ff;
+  border-radius: 10px;
+  box-shadow: 0 0 10px rgba(0,0,0,0.1);
+}
+
+.auth-container {
+  max-width: 400px;
+  margin: auto;
+  padding: 20px;
+  text-align: center;
+}
+.auth-container input {
+  width: 100%;
+}
+.auth-container button {
+  margin-top: 10px;
+}
+
+h1, h2 {
+  color: #333;
+  text-align: center;
+}
+
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+input, textarea, select {
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  font-size: 1em;
+}
+
+button {
+  background-color: #4CAF50;
+  color: white;
+  padding: 10px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+button:hover {
+  background-color: #45a049;
+}
+
+.item-list {
+  list-style-type: none;
+  padding: 0;
+}
+
+.item {
+  padding: 10px;
+  margin-top: 10px;
+  border-radius: 5px;
+  font-size: 1em;
+}
+
+.item.lost {
+  background-color: #ffecec;
+  border-left: 5px solid red;
+}
+
+.item.found {
+  background-color: #e7ffe7;
+  border-left: 5px solid green;
+}
+////////////////////////////////
+import React, { useState, useEffect } from "react";
+import Register from "./Register";
+import "./App.css";
+import { FaSignOutAlt, FaPlusCircle, FaSearch, FaBoxOpen } from "react-icons/fa";
+import { jwtDecode } from "jwt-decode";
+
+
+function App() {
+  const [items, setItems] = useState([]);
+  const [form, setForm] = useState({
+    title: "",
+    description: "",
+    type: "lost",
+    location: "",
+    contact: "",
+  });
+  const [image, setImage] = useState(null);
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [token, setToken] = useState("");
+  const [userId, setUserId] = useState("");
+  const [showRegister, setShowRegister] = useState(false);
+  const [tab, setTab] = useState("lost");
+
+  useEffect(() => {
+    fetch("http://localhost:5000/api/items")
+      .then(res => res.json())
+      .then(data => setItems(data))
+      .catch(err => console.error("Fetch error:", err));
+  }, []);
+
+  const handleChange = e => setForm({ ...form, [e.target.name]: e.target.value });
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    const formData = new FormData();
+    Object.entries(form).forEach(([key, val]) => formData.append(key, val));
+    if (form.type === "found" && image) formData.append("image", image);
+
+    const res = await fetch("http://localhost:5000/api/items", {
+      method: "POST",
+      headers: { Authorization: `Bearer ${token}` },
+      body: formData,
+    });
+
+    const data = await res.json();
+    if (res.ok) {
+      setItems([data, ...items]);
+      setForm({ title: "", description: "", type: tab, location: "", contact: "" });
+      setImage(null);
+    } else {
+      alert(data.message || "Failed to post item");
+    }
+  };
+
+  const handleDelete = async (id) => {
+    const res = await fetch(`http://localhost:5000/api/items/${id}`, {
+      method: "DELETE",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+    });
+
+    if (res.ok) {
+      setItems(items.filter(item => item._id !== id));
+    } else {
+      alert("Failed to delete item");
+    }
+  };
+
+  const handleLogin = async (e) => {
+    e.preventDefault();
+    const username = e.target.username.value;
+    const password = e.target.password.value;
+
+    const res = await fetch("http://localhost:5000/api/login", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ username, password }),
+    });
+
+    const data = await res.json();
+    if (res.ok) {
+      setToken(data.token);
+      const decoded = jwtDecode(data.token);
+      setUserId(decoded.id);
+      setIsLoggedIn(true);
+    } else {
+      alert(data.error || "Login failed");
+    }
+  };
+
+  if (!isLoggedIn) {
+    return showRegister ? (
+      <Register onRegisterSuccess={() => setShowRegister(false)} />
+    ) : (
+      <div className="auth-container">
+        <h2>Login</h2>
+        <form onSubmit={handleLogin} className="form">
+          <input name="username" placeholder="Username" required />
+          <input name="password" type="password" placeholder="Password" required />
+          <button type="submit">Login</button>
+        </form>
+        <p>
+          Don't have an account?{" "}
+          <button onClick={() => setShowRegister(true)}>Register</button>
+        </p>
+      </div>
+    );
+  }
+
+  return (
+    <div className="app">
+      <div className="header">
+        <h1>🎒 Campus Lost & Found</h1>
+        <button onClick={() => setIsLoggedIn(false)} className="logout">
+          <FaSignOutAlt /> Logout
+        </button>
+      </div>
+
+      <div className="tabs">
+        <button className={tab === "lost" ? "active" : ""} onClick={() => setTab("lost")}>
+          <FaSearch /> Report Lost
+        </button>
+        <button className={tab === "found" ? "active" : ""} onClick={() => setTab("found")}>
+          <FaBoxOpen /> Report Found
+        </button>
+      </div>
+
+      <form onSubmit={handleSubmit} className="form">
+        <input name="title" placeholder="Item Title" value={form.title} onChange={handleChange} required />
+        <textarea name="description" placeholder="Description" value={form.description} onChange={handleChange} required />
+        <input name="location" placeholder="Location" value={form.location} onChange={handleChange} required />
+        <input name="contact" placeholder="Contact Info" value={form.contact} onChange={handleChange} required />
+        <input type="hidden" name="type" value={tab} />
+        {tab === "found" && (
+          <input type="file" name="image" accept="image/*" onChange={(e) => setImage(e.target.files[0])} />
+        )}
+        <button type="submit"><FaPlusCircle /> Submit</button>
+      </form>
+
+      <h2>📋 Listed Items</h2>
+      <ul className="item-list">
+        {items
+          .filter(item => item.type === tab)
+          .map(item => (
+            <li key={item._id} className={`item ${item.type}`}>
+              <strong>{item.title}</strong><br />
+              <em>{item.description}</em><br />
+              📍 {item.location} <br />
+              📞 {item.contact} <br />
+              {item.imageUrl && <img src={`http://localhost:5000${item.imageUrl}`} alt="Item" width="150" />}<br />
+              {item.user === userId && (
+                <button onClick={() => handleDelete(item._id)}>🗑️ Delete</button>
+              )}
+            </li>
+          ))}
+      </ul>
+    </div>
+  );
+}
+
+export default App;
