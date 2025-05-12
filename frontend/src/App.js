@@ -168,7 +168,9 @@ function ItemsPage({ token, type, onLogout }) {
             📍 {item.location}<br />
             📞 {item.contact}<br />
             👤 Reporter: {item.reporter}<br />
-            {item.imageUrl && <img src={`${API_URL}${item.imageUrl}`} width="150" alt="uploaded" />}<br />
+        {item.imageUrl && <img src={item.imageUrl} width="150" alt="uploaded" />}
+
+           <br />
             {token && item.userId === JSON.parse(atob(token.split('.')[1])).userId && (
               <button onClick={() => handleDelete(item._id)}>🗑️ Delete</button>
             )}
