@@ -139,8 +139,8 @@ function ItemsPage({ token, type, onLogout }) {
 
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
         <h2>{type.toUpperCase()} Items</h2>
-        <button
-          onClick={() => navigate('/report')}
+       <button onClick={() => navigate('/report', { state: { type } })}
+
           style={{
             padding: "8px 12px",
             backgroundColor: "#007bff",
@@ -182,7 +182,11 @@ function ItemsPage({ token, type, onLogout }) {
 }
 
 function ReportItem({ token, onLogout }) {
-  const [form, setForm] = useState({ title: "", description: "", type: "lost", location: "", contact: "" });
+  import { useLocation } from "react-router-dom";
+const location = useLocation();
+const defaultType = location.state?.type || "lost";
+const [form, setForm] = useState({ title: "", description: "", type: defaultType, location: "", contact: "" });
+
   const [image, setImage] = useState(null);
   const navigate = useNavigate();
 
