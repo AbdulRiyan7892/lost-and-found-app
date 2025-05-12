@@ -218,7 +218,8 @@ const [form, setForm] = useState({ title: "", description: "", type: defaultType
         <textarea name="description" placeholder="Description" onChange={handleChange} required />
         <input name="location" placeholder="Location" onChange={handleChange} required />
         <input name="contact" placeholder="Contact" onChange={handleChange} required />
-        <select name="type" onChange={handleChange}>
+       <select name="type" value={form.type} onChange={handleChange}>
+
           <option value="lost">Lost</option>
           <option value="found">Found</option>
         </select>
