@@ -215,7 +215,8 @@ function ReportItem({ token, onLogout }) {
           <option value="lost">Lost</option>
           <option value="found">Found</option>
         </select>
-        {form.type === "found" && <input type="file" onChange={(e) => setImage(e.target.files[0])} />}
+        {form.type === "found" && <input type="file" name="image" onChange={(e) => setImage(e.target.files[0])} />
+}
         <button type="submit">Submit</button>
       </form>
     </div>
