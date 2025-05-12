@@ -180,9 +180,9 @@ function ItemsPage({ token, type, onLogout }) {
     </div>
   );
 }
-
+import { useLocation } from "react-router-dom";
 function ReportItem({ token, onLogout }) {
-  import { useLocation } from "react-router-dom";
+  
 const location = useLocation();
 const defaultType = location.state?.type || "lost";
 const [form, setForm] = useState({ title: "", description: "", type: defaultType, location: "", contact: "" });
