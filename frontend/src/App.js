@@ -205,7 +205,7 @@ const [form, setForm] = useState({ title: "", description: "", type: defaultType
     });
 
     if (res.ok) navigate(`/${form.type}`);
-    else alert("❌ Failed to report item.Supported format "jpg", "jpeg", "png"");
+    else alert("❌ Failed to report item.Supported format jpg, jpeg, png ");
   };
 
   return (
