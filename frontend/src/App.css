@@ -123,3 +123,17 @@ li img {
   margin-top: 10px;
   border-radius: 6px;
 }
+
+/* Call & WhatsApp links */
+li a {
+  display: inline-block;
+  margin-top: 8px;
+  margin-right: 10px;
+  color: #1976d2;
+  text-decoration: none;
+  font-weight: 500;
+}
+
+li a:hover {
+  text-decoration: underline;
+}
