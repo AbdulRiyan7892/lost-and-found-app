@@ -1,22 +1,30 @@
 import React, { useState, useEffect } from "react";
 import './App.css';
-import { BrowserRouter as Router, Routes, Route, Navigate, Link, useNavigate, useLocation } from "react-router-dom";
+import {
+  BrowserRouter as Router,
+  Routes,
+  Route,
+  Navigate,
+  Link,
+  useNavigate
+} from "react-router-dom";
 import { FaHome, FaSignOutAlt } from "react-icons/fa";
+import { useLocation } from "react-router-dom";
 
 const API_URL = "https://lost-and-found-app-1.onrender.com";
 
 // Navbar component
 function Navbar({ onLogout }) {
   const navigate = useNavigate();
+
   return (
     <div className="navbar">
-      <button className="nav-button" onClick={() => navigate("/home")}><FaHome /> Home</button>
-      <button className="nav-button" onClick={onLogout}><FaSignOutAlt /> Logout</button>
+      <button className="nav-button" onClick={() => navigate("/home")}> <FaHome /> Home </button>
+      <button className="nav-button" onClick={onLogout}> <FaSignOutAlt /> Logout </button>
     </div>
   );
 }
 
-// Login Page
 function LoginPage({ setToken }) {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
@@ -51,18 +59,16 @@ function LoginPage({ setToken }) {
   );
 }
 
-// Register Page
 function RegisterPage() {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
-  const [contact, setContact] = useState("");
   const navigate = useNavigate();
 
   const handleRegister = async () => {
     const res = await fetch(`${API_URL}/api/register`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ username, password, contact }),
+      body: JSON.stringify({ username, password }),
     });
 
     if (res.ok) {
@@ -78,13 +84,11 @@ function RegisterPage() {
       <h2>Register</h2>
       <input placeholder="Username" onChange={(e) => setUsername(e.target.value)} />
       <input type="password" placeholder="Password" onChange={(e) => setPassword(e.target.value)} />
-      <input placeholder="Contact Number" onChange={(e) => setContact(e.target.value)} />
       <button onClick={handleRegister}>Register</button>
     </div>
   );
 }
 
-// Home Page
 function Home({ token, onLogout }) {
   return (
     <div className="container">
@@ -93,15 +97,12 @@ function Home({ token, onLogout }) {
       <div className="section-buttons">
         <Link to="/lost" className="section-button lost">Lost Items</Link>
         <Link to="/found" className="section-button found">Found Items</Link>
-      </div>
-      <div style={{ marginTop: "30px", textAlign: "center" }}>
-        <Link to="/report" className="section-button report">➕ Report Lost-F ound Item</Link>
+        <Link to="/report" className="section-button report">Report Item</Link>
       </div>
     </div>
   );
 }
 
-// Items Page
 function ItemsPage({ token, type, onLogout }) {
   const [items, setItems] = useState([]);
   const [search, setSearch] = useState("");
@@ -120,7 +121,9 @@ function ItemsPage({ token, type, onLogout }) {
   );
 
   const handleDelete = async (id) => {
-    if (!window.confirm("⚠️ This action is irreversible. Confirm delete?")) return;
+    const confirm2 = window.confirm("⚠️ This action is irreversible. Confirm delete?");
+    if (!confirm2) return;
+
     const res = await fetch(`${API_URL}/api/items/${id}`, {
       method: "DELETE",
       headers: { Authorization: `Bearer ${token}` },
@@ -137,8 +140,29 @@ function ItemsPage({ token, type, onLogout }) {
   return (
     <div className="container">
       <Navbar onLogout={onLogout} />
-      <h2>{type.toUpperCase()} Items</h2>
-      <input placeholder="Search..." onChange={(e) => setSearch(e.target.value)} style={{ marginTop: "10px", padding: "5px", width: "100%" }} />
+
+      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+        <h2>{type.toUpperCase()} Items</h2>
+        <button
+          onClick={() => navigate('/report', { state: { type } })}
+          style={{
+            padding: "8px 12px",
+            backgroundColor: "#2196f3",
+            color: "white",
+            border: "none",
+            borderRadius: "8px",
+            cursor: "pointer"
+          }}
+        >
+          ➕ Report {type.charAt(0).toUpperCase() + type.slice(1)}
+        </button>
+      </div>
+
+      <input
+        placeholder="Search..."
+        onChange={(e) => setSearch(e.target.value)}
+        style={{ marginTop: "10px", padding: "10px", width: "100%" }}
+      />
 
       <ul>
         {filtered.map((item) => (
@@ -146,15 +170,11 @@ function ItemsPage({ token, type, onLogout }) {
             <strong>{item.title}</strong><br />
             {item.description}<br />
             📍 {item.location}<br />
-            📞 {item.contact}<br />
+            📞 <a href={`tel:${item.contact}`} style={{ color: '#1976d2', textDecoration: 'none' }}>{item.contact}</a><br />
+            💬 <a href={`https://wa.me/${item.contact.replace(/[^0-9]/g, '')}`} target="_blank" rel="noopener noreferrer" style={{ color: '#25D366', textDecoration: 'none' }}>WhatsApp</a><br />
             👤 Reporter: {item.reporter}<br />
-            {item.imageUrl && <img src={item.imageUrl} width="150" alt="uploaded" />}<br />
-
-            {/* Call & WhatsApp Buttons */}
-            <a href={`tel:${item.contact}`} style={{ marginRight: "10px" }}>📞 Call</a>
-            <a href={`https://wa.me/${item.contact}`} target="_blank" rel="noopener noreferrer">💬 WhatsApp</a><br />
-
-            {/* Delete Button if user owns item */}
+            {item.imageUrl && <img src={item.imageUrl} width="150" alt="uploaded" />}
+            <br />
             {token && item.userId === JSON.parse(atob(token.split('.')[1])).userId && (
               <button onClick={() => handleDelete(item._id)}>🗑️ Delete</button>
             )}
@@ -165,21 +185,12 @@ function ItemsPage({ token, type, onLogout }) {
   );
 }
 
-// Report Item Page
 function ReportItem({ token, onLogout }) {
   const location = useLocation();
   const defaultType = location.state?.type || "lost";
-
-  const [form, setForm] = useState({
-    title: "", description: "", type: defaultType, location: "", contact: ""
-  });
+  const [form, setForm] = useState({ title: "", description: "", type: defaultType, location: "", contact: "" });
   const [image, setImage] = useState(null);
   const navigate = useNavigate();
-
-  useEffect(() => {
-    const payload = JSON.parse(atob(token.split('.')[1]));
-    setForm((prev) => ({ ...prev, contact: payload.contact || "" }));
-  }, [token]);
 
   const handleChange = (e) => setForm({ ...form, [e.target.name]: e.target.value });
 
@@ -196,7 +207,7 @@ function ReportItem({ token, onLogout }) {
     });
 
     if (res.ok) navigate(`/${form.type}`);
-    else alert("❌ Failed to report item. Supported formats: jpg, jpeg, png");
+    else alert("❌ Failed to report item. Supported format jpg, jpeg, png");
   };
 
   return (
@@ -207,6 +218,7 @@ function ReportItem({ token, onLogout }) {
         <input name="title" placeholder="Title" onChange={handleChange} required />
         <textarea name="description" placeholder="Description" onChange={handleChange} required />
         <input name="location" placeholder="Location" onChange={handleChange} required />
+        <input name="contact" placeholder="Contact" onChange={handleChange} required />
         <select name="type" value={form.type} onChange={handleChange}>
           <option value="lost">Lost</option>
           <option value="found">Found</option>
@@ -220,7 +232,6 @@ function ReportItem({ token, onLogout }) {
   );
 }
 
-// Main App Component
 function App() {
   const [token, setToken] = useState(localStorage.getItem("token"));
 
