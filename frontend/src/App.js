@@ -51,8 +51,8 @@ function LoginPage({ setToken }) {
 
   return (
     <div className="container">
-      <h2>Welcome to Lost & Found Portal</h2>
-      <p style={{ color: '#555', marginBottom: '1.5rem' }}>Please login to continue and help keep our campus organized!</p>
+      <h2>Welcome to MCE Lost & Found Portal</h2>
+      <p style={{ color: '#555', marginBottom: '1.5rem' }}>Please login to continue.. and help to keep our campus organized!</p>
       <input placeholder="Username" onChange={(e) => setUsername(e.target.value)} />
       <input type="password" placeholder="Password" onChange={(e) => setPassword(e.target.value)} />
       <button onClick={handleLogin}>Login</button>
@@ -103,7 +103,7 @@ function Home({ token, onLogout }) {
         <Link to="/found" className="section-button found">Found Items</Link>
       </div>
       <div style={{ marginTop: '2rem' }}>
-        <Link to="/report" className="section-button report" style={{ display: 'inline-block', padding: '1rem 2rem' }}>Report Lost-Find Items</Link>
+        <Link to="/report" className="section-button report" style={{ display: 'inline-block', padding: '1rem 2rem' }}>Report Lost-Found Items</Link>
       </div>
     </div>
   );
