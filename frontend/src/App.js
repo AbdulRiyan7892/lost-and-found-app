@@ -1,3 +1,4 @@
+//App.js
 import React, { useState, useEffect } from "react";
 import './App.css';
 import {
@@ -50,7 +51,8 @@ function LoginPage({ setToken }) {
 
   return (
     <div className="container">
-      <h2>Login</h2>
+      <h2>Welcome to Lost & Found Portal</h2>
+      <p style={{ color: '#555', marginBottom: '1.5rem' }}>Please login to continue and help keep our campus organized!</p>
       <input placeholder="Username" onChange={(e) => setUsername(e.target.value)} />
       <input type="password" placeholder="Password" onChange={(e) => setPassword(e.target.value)} />
       <button onClick={handleLogin}>Login</button>
@@ -62,13 +64,14 @@ function LoginPage({ setToken }) {
 function RegisterPage() {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
+  const [contact, setContact] = useState("");
   const navigate = useNavigate();
 
   const handleRegister = async () => {
     const res = await fetch(`${API_URL}/api/register`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ username, password }),
+      body: JSON.stringify({ username, password, contact }),
     });
 
     if (res.ok) {
@@ -84,6 +87,7 @@ function RegisterPage() {
       <h2>Register</h2>
       <input placeholder="Username" onChange={(e) => setUsername(e.target.value)} />
       <input type="password" placeholder="Password" onChange={(e) => setPassword(e.target.value)} />
+      <input placeholder="Contact Number" onChange={(e) => setContact(e.target.value)} />
       <button onClick={handleRegister}>Register</button>
     </div>
   );
@@ -97,7 +101,9 @@ function Home({ token, onLogout }) {
       <div className="section-buttons">
         <Link to="/lost" className="section-button lost">Lost Items</Link>
         <Link to="/found" className="section-button found">Found Items</Link>
-        <Link to="/report" className="section-button report">Report Item</Link>
+      </div>
+      <div style={{ marginTop: '2rem' }}>
+        <Link to="/report" className="section-button report" style={{ display: 'inline-block', padding: '1rem 2rem' }}>Report Lost-Find Items</Link>
       </div>
     </div>
   );
@@ -146,11 +152,11 @@ function ItemsPage({ token, type, onLogout }) {
         <button
           onClick={() => navigate('/report', { state: { type } })}
           style={{
-            padding: "8px 12px",
-            backgroundColor: "#2196f3",
+            padding: "10px 14px",
+            backgroundColor: "#1e88e5",
             color: "white",
             border: "none",
-            borderRadius: "8px",
+            borderRadius: "10px",
             cursor: "pointer"
           }}
         >
