@@ -96,6 +96,10 @@ app.post("/api/login", async (req, res) => {
   const token = jwt.sign({ userId: user._id, username: user.username }, JWT_SECRET);
   res.json({ token });
 });
+app.get("/api/profile", auth, async (req, res) => {
+  const user = await User.findById(req.user.userId).select("username contact");
+  res.json(user);
+});
 
 // Get all items
 app.get("/api/items", async (req, res) => {
