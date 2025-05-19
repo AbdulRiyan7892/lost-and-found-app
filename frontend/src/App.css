@@ -72,22 +72,18 @@ button:hover {
   color: white;
   font-weight: bold;
   transition: transform 0.2s;
+  background: linear-gradient(to right, #42a5f5, #7e57c2); /* Uniform gradient */
 }
 
-.section-button.lost {
-  background-color: #ef5350;
-}
-
-.section-button.found {
-  background-color: #66bb6a;
-}
-
+.section-button.lost,
+.section-button.found,
 .section-button.report {
-  background-color: #42a5f5;
+  background: inherit; /* Use the uniform gradient */
 }
 
 .section-button:hover {
   transform: translateY(-5px);
+  background: linear-gradient(to right, #1e88e5, #6a1b9a); /* Hover gradient */
 }
 
 /* Form Inputs */
