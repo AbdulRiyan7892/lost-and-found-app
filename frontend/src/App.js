@@ -1,4 +1,4 @@
-//App.js
+// App.js
 import React, { useState, useEffect } from "react";
 import './App.css';
 import {
@@ -194,27 +194,28 @@ function ItemsPage({ token, type, onLogout }) {
 function ReportItem({ token, onLogout }) {
   const location = useLocation();
   const defaultType = location.state?.type || "lost";
-
-  // Decode the token to extract contact info
-  let contactFromToken = "";
-  try {
-    const payload = JSON.parse(atob(token.split('.')[1]));
-    contactFromToken = payload.contact || "";
-  } catch (e) {
-    console.error("Invalid token format", e);
-  }
-
-  const [form, setForm] = useState({
-    title: "",
-    description: "",
-    type: defaultType,
-    location: "",
-    contact: contactFromToken  // auto-filled from token
-  });
+  const [form, setForm] = useState({ title: "", description: "", type: defaultType, location: "", contact: "" });
   const [image, setImage] = useState(null);
   const navigate = useNavigate();
 
   const handleChange = (e) => setForm({ ...form, [e.target.name]: e.target.value });
+
+  // ✅ Fetch profile to prefill contact
+  useEffect(() => {
+    const fetchProfile = async () => {
+      try {
+        const res = await fetch(`${API_URL}/api/profile`, {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+        const data = await res.json();
+        setForm((prev) => ({ ...prev, contact: data.contact || "" }));
+      } catch (err) {
+        console.error("❌ Failed to fetch profile", err);
+      }
+    };
+
+    fetchProfile();
+  }, [token]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -253,7 +254,6 @@ function ReportItem({ token, onLogout }) {
     </div>
   );
 }
-
 
 function App() {
   const [token, setToken] = useState(localStorage.getItem("token"));
