@@ -194,7 +194,23 @@ function ItemsPage({ token, type, onLogout }) {
 function ReportItem({ token, onLogout }) {
   const location = useLocation();
   const defaultType = location.state?.type || "lost";
-  const [form, setForm] = useState({ title: "", description: "", type: defaultType, location: "", contact: "" });
+
+  // Decode the token to extract contact info
+  let contactFromToken = "";
+  try {
+    const payload = JSON.parse(atob(token.split('.')[1]));
+    contactFromToken = payload.contact || "";
+  } catch (e) {
+    console.error("Invalid token format", e);
+  }
+
+  const [form, setForm] = useState({
+    title: "",
+    description: "",
+    type: defaultType,
+    location: "",
+    contact: contactFromToken  // auto-filled from token
+  });
   const [image, setImage] = useState(null);
   const navigate = useNavigate();
 
@@ -224,7 +240,7 @@ function ReportItem({ token, onLogout }) {
         <input name="title" placeholder="Title" onChange={handleChange} required />
         <textarea name="description" placeholder="Description" onChange={handleChange} required />
         <input name="location" placeholder="Location" onChange={handleChange} required />
-        <input name="contact" placeholder="Contact" onChange={handleChange} required />
+        <input name="contact" placeholder="Contact" value={form.contact} onChange={handleChange} required />
         <select name="type" value={form.type} onChange={handleChange}>
           <option value="lost">Lost</option>
           <option value="found">Found</option>
@@ -237,6 +253,7 @@ function ReportItem({ token, onLogout }) {
     </div>
   );
 }
+
 
 function App() {
   const [token, setToken] = useState(localStorage.getItem("token"));
