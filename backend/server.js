@@ -72,17 +72,19 @@ const auth = (req, res, next) => {
 };
 
 // Register
+// Add `contact` to register endpoint
 app.post("/api/register", async (req, res) => {
-  const { username, password } = req.body;
+  const { username, password, contact } = req.body;
   const hashed = await bcrypt.hash(password, 10);
   try {
-    const user = new User({ username, password: hashed });
+    const user = new User({ username, password: hashed, contact });
     await user.save();
     res.status(201).json({ message: "Registered" });
   } catch {
     res.status(400).json({ error: "User exists or invalid data" });
   }
 });
+
 
 // Login
 app.post("/api/login", async (req, res) => {
