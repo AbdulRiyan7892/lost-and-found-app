@@ -11,7 +11,6 @@ body {
   margin-top: 20px;
 }
 
-
 /* Container */
 .container {
   max-width: 700px;
@@ -70,6 +69,7 @@ button:hover {
 
 .section-button {
   width: 90%;
+  max-width: 400px; /* Ensures uniform width */
   padding: 1.5rem;
   text-align: center;
   border-radius: 18px;
