@@ -4,7 +4,7 @@ import './App.css';
 import {
   BrowserRouter as Router,
   Routes, 
-  Route,
+  Route, 
   Navigate,
   Link,
   useNavigate
