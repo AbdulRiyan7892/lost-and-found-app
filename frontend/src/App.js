@@ -29,34 +29,52 @@ function Navbar({ onLogout }) {
 function LoginPage({ setToken }) {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
+  const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
   const handleLogin = async () => {
-    const res = await fetch(`${API_URL}/api/login`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ username, password }),
-    });
-    const data = await res.json();
+    setLoading(true); // Start loading
+    try {
+      const res = await fetch(`${API_URL}/api/login`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ username, password }),
+      });
+      const data = await res.json();
 
-    if (data.token) {
-      alert("✅ Login successful!");
-      setToken(data.token);
-      localStorage.setItem("token", data.token);
-      navigate("/home");
-    } else {
-      alert("❌ Invalid credentials !!. New User?? Register first...");
+      if (data.token) {
+        alert("✅ Login successful!");
+        setToken(data.token);
+        localStorage.setItem("token", data.token);
+        navigate("/home");
+      } else {
+        alert("❌ Invalid credentials !!. New User?? Register first...");
+      }
+    } catch (error) {
+      alert("❌ Error while logging in. Please try again.");
+      console.error(error);
+    } finally {
+      setLoading(false); // End loading
     }
   };
 
   return (
     <div className="container">
       <h2>Welcome to MCE Lost & Found Portal</h2>
-      <p style={{ color: '#555', marginBottom: '1.5rem' }}>Please login to continue.. and help to keep our campus organized!</p>
-      <input placeholder="Username" onChange={(e) => setUsername(e.target.value)} />
-      <input type="password" placeholder="Password" onChange={(e) => setPassword(e.target.value)} />
-      <button onClick={handleLogin}>Login</button>
-      <p>Don't have an account? <Link to="/register">Register</Link></p>
+      <p style={{ color: '#555', marginBottom: '1.5rem' }}>
+        Please login to continue.. and help to keep our campus organized!
+      </p>
+
+      {loading ? (
+        <div className="loading">🔄 Logging in, please wait...</div>
+      ) : (
+        <>
+          <input placeholder="Username" onChange={(e) => setUsername(e.target.value)} />
+          <input type="password" placeholder="Password" onChange={(e) => setPassword(e.target.value)} />
+          <button onClick={handleLogin}>Login</button>
+          <p>Don't have an account? <Link to="/register">Register</Link></p>
+        </>
+      )}
     </div>
   );
 }
