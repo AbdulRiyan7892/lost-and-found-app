@@ -88,19 +88,24 @@ function RegisterPage() {
   const navigate = useNavigate();
 
   const handleRegister = async () => {
-    const res = await fetch(`${API_URL}/api/register`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ username, password, contact }),
-    });
+  if (!/^\d{10}$/.test(contact)) {
+    alert("❌ Please enter a valid 10-digit contact number.");
+    return;
+  }
 
-    if (res.ok) {
-      alert("✅ Registration successful! You can now log in.");
-      navigate("/");
-    } else {
-      alert("❌ Registration failed. Try a different username.");
-    }
-  };
+  const res = await fetch(`${API_URL}/api/register`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ username, password, contact }),
+  });
+
+  if (res.ok) {
+    alert("✅ Registration successful! You can now log in.");
+    navigate("/");
+  } else {
+    alert("❌ Registration failed. Try a different username.");
+  }
+};
 
   return (
     <div className="container">
@@ -256,20 +261,27 @@ function ReportItem({ token, onLogout }) {
   }, [token]);
 
   const handleSubmit = async (e) => {
-    e.preventDefault();
-    const fd = new FormData();
-    Object.entries(form).forEach(([k, v]) => fd.append(k, v));
-    if (form.type === "found" && image) fd.append("image", image);
+  e.preventDefault();
 
-    const res = await fetch(`${API_URL}/api/items`, {
-      method: "POST",
-      headers: { Authorization: `Bearer ${token}` },
-      body: fd,
-    });
+  if (!/^\d{10}$/.test(form.contact)) {
+    alert("❌ Please enter a valid 10-digit contact number.");
+    return;
+  }
 
-    if (res.ok) navigate(`/${form.type}`);
-    else alert("❌ Failed to report item. Supported format jpg, jpeg, png");
-  };
+  const fd = new FormData();
+  Object.entries(form).forEach(([k, v]) => fd.append(k, v));
+  if (form.type === "found" && image) fd.append("image", image);
+
+  const res = await fetch(`${API_URL}/api/items`, {
+    method: "POST",
+    headers: { Authorization: `Bearer ${token}` },
+    body: fd,
+  });
+
+  if (res.ok) navigate(`/${form.type}`);
+  else alert("❌ Failed to report item. Supported format jpg, jpeg, png");
+};
+
 
   return (
     <div className="container">
