@@ -5,6 +5,12 @@ body {
   background: linear-gradient(to bottom right, #e1f5fe, #fce4ec);
   color: #333;
 }
+.loading {
+  font-size: 1.2rem;
+  color: #1976d2;
+  margin-top: 20px;
+}
+
 
 /* Container */
 .container {
