@@ -62,7 +62,8 @@ function LoginPage({ setToken }) {
 
   return (
     <div className="container">
-      <h2>Welcome to MCE Lost & Found Portal</h2>
+      <h2>Malnad College Of Engineering Hassan</h2>
+    <h3>Welcome to Lost & Found Portal<h3>
       <p style={{ color: '#555', marginBottom: '1.5rem' }}>
         Please login to continue.. and help to keep our campus organized!
       </p>
