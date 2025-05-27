@@ -2,9 +2,15 @@
 body {
   margin: 0;
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-  background: linear-gradient(to bottom right, #e1f5fe, #fce4ec);
+  background-image: url('your-background-image-url.jpg');
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-attachment: fixed;
   color: #333;
 }
+
+/* Loading text */
 .loading {
   font-size: 1.2rem;
   color: #1976d2;
@@ -16,10 +22,11 @@ body {
   max-width: 700px;
   margin: 40px auto;
   padding: 30px;
-  background: #ffffff;
+  background: rgba(255, 255, 255, 0.85); /* Semi-transparent white */
   border-radius: 20px;
   box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
   text-align: center;
+  backdrop-filter: blur(4px);
 }
 
 /* Welcome Message */
@@ -27,36 +34,6 @@ body {
   font-size: 2.2rem;
   color: #1976d2;
   margin-bottom: 0.5rem;
-}
-.container h3:first-child {
-  font-size: 2.0rem;
-  color: #1976d2;
-  margin-bottom: 0.5rem;
-}
-/* Add near the top or inside .container if you want it specific */
-.container {
-  background-image: url('/bg-campus-items.png');
-  background-size: cover;
-  background-repeat: no-repeat;
-  background-position: center;
-  color: white;
-  text-shadow: 1px 1px 2px #000;
-}
-
-/* Optional: add a semi-transparent overlay for readability */
-.container::before{
-  content: '';
-  position: absolute;
-  top: 0; left: 0;
-  width: 100%; height: 100%;
-  background: rgba(0,0,0,0.4);
-  z-index: 0;
-  border-radius: 20px;
-}
-
-.container > * {
-  position: relative;
-  z-index: 1;
 }
 
 /* Navbar */
@@ -99,7 +76,7 @@ button:hover {
 
 .section-button {
   width: 90%;
-  max-width: 400px; /* Ensures uniform width */
+  max-width: 400px;
   padding: 1.5rem;
   text-align: center;
   border-radius: 18px;
@@ -107,10 +84,9 @@ button:hover {
   text-decoration: none;
   color: white;
   font-weight: bold;
-  background: linear-gradient(to right, #42a5f5, #7e57c2); /* Static uniform gradient */
+  background: linear-gradient(to right, #42a5f5, #7e57c2);
 }
 
-/* Remove hover effect for home buttons */
 .section-button.lost,
 .section-button.found,
 .section-button.report {
@@ -141,13 +117,14 @@ ul {
 }
 
 li {
-  background-color: #fdfdfd;
+  background-color: rgba(255, 255, 255, 0.9);
   border: 1px solid #ddd;
   border-radius: 10px;
   padding: 20px;
   margin-bottom: 12px;
   box-shadow: 0 3px 10px rgba(0, 0, 0, 0.05);
   text-align: left;
+  backdrop-filter: blur(3px);
 }
 
 li img {
