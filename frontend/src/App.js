@@ -6,7 +6,7 @@ import {
   Routes, 
   Route, 
   Navigate,
-  Link,
+  Link, 
   useNavigate
 } from "react-router-dom";
 import { FaHome, FaSignOutAlt } from "react-icons/fa";
