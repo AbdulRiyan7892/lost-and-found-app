@@ -1,0 +1,134 @@
+/* Body Styling */
+body {
+  margin: 0;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background-image: url('/frontend/public/lost.png');
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+  color: #333;
+}
+
+/* Loading text */
+.loading {
+  font-size: 1.2rem;
+  color: #1976d2;
+  margin-top: 20px; 
+}
+
+/* Container */
+.container {
+  max-width: 700px;
+  margin: 40px auto;
+  padding: 30px;
+  background: rgba(255, 255, 255, 0.85); /* Semi-transparent white */
+  border-radius: 20px;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+  text-align: center;
+  backdrop-filter: blur(4px);
+}
+
+/* Welcome Message */
+.container h2:first-child {
+  font-size: 2.2rem;
+  color: #1976d2;
+  margin-bottom: 0.5rem;
+}
+
+/* Navbar */
+.navbar {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 20px;
+}
+
+/* Buttons */
+.nav-button,
+button {
+  background: linear-gradient(to right, #42a5f5, #7e57c2);
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 12px;
+  cursor: pointer;
+  font-size: 16px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  transition: background 0.3s ease, transform 0.2s;
+}
+
+.nav-button:hover,
+button:hover {
+  background: linear-gradient(to right, #1e88e5, #6a1b9a);
+  transform: scale(1.05);
+}
+
+/* Home Page Section Buttons */
+.section-buttons {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1.5rem;
+  margin-top: 2rem;
+}
+
+.section-button {
+  width: 90%;
+  max-width: 400px;
+  padding: 1.5rem;
+  text-align: center;
+  border-radius: 18px;
+  font-size: 1.4rem;
+  text-decoration: none;
+  color: white;
+  font-weight: bold;
+  background: linear-gradient(to right, #42a5f5, #7e57c2);
+}
+
+.section-button.lost,
+.section-button.found,
+.section-button.report {
+  background: linear-gradient(to right, #42a5f5, #7e57c2);
+  transition: none;
+}
+
+.section-button:hover {
+  transform: none;
+  background: linear-gradient(to right, #42a5f5, #7e57c2);
+}
+
+/* Form Inputs */
+input, textarea, select {
+  width: 100%;
+  padding: 12px;
+  margin-top: 10px;
+  border: 1px solid #ccc;
+  border-radius: 10px;
+  font-size: 16px;
+  box-sizing: border-box;
+}
+
+/* List */
+ul {
+  list-style: none;
+  padding: 0;
+}
+
+li {
+  background-color: rgba(255, 255, 255, 0.9);
+  border: 1px solid #ddd;
+  border-radius: 10px;
+  padding: 20px;
+  margin-bottom: 12px;
+  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.05);
+  text-align: left;
+  backdrop-filter: blur(3px);
+}
+
+li img {
+  margin-top: 10px;
+  border-radius: 8px;
+  max-width: 100%;
+}
