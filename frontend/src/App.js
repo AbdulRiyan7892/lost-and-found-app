@@ -90,7 +90,9 @@ function RegisterPage() {
   const navigate = useNavigate();
 
   const handleRegister = async () => {
-  if (!/^\d{13}$/.test(contact)) {
+    const plainContact = form.contact.replace(/\D/g, ''); // extract only digits
+
+  if (!/^\d{10}$/.test(plainContact)) {
     alert("❌ Please enter a valid 10-digit contact number.");
     return;
   }
@@ -116,12 +118,17 @@ function RegisterPage() {
       <input placeholder="Username" onChange={(e) => setUsername(e.target.value)} />
       <input type="password" placeholder="Password" onChange={(e) => setPassword(e.target.value)} />
     
-      <input
-  placeholder="Contact Number"
-  value={contact}
-  onChange={(e) => setContact(e.target.value.replace(/\D/g, '').slice(0, 10))}
+    <input
+  name="contact"
+  placeholder="Contact"
+  value={form.contact}
+  onChange={(e) => {
+    const digits = e.target.value.replace(/\D/g, '').slice(0, 10);
+    setForm({ ...form, contact: digits ? `+91${digits}` : '' });
+  }}
   required
 />
+
 
       <button onClick={handleRegister}>Register</button>
     </div>
