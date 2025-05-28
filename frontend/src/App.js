@@ -90,7 +90,7 @@ function RegisterPage() {
   const navigate = useNavigate();
 
   const handleRegister = async () => {
-    const plainContact = form.contact.replace(/\D/g, ''); // extract only digits
+  
 
   if (!/^\d{10}$/.test(plainContact)) {
     alert("❌ Please enter a valid 10-digit contact number.");
@@ -121,10 +121,10 @@ function RegisterPage() {
     <input
   name="contact"
   placeholder="Contact"
-  value={form.contact}
+ 
   onChange={(e) => {
     const digits = e.target.value.replace(/\D/g, '').slice(0, 10);
-    setForm({ ...form, contact: digits ? `+91${digits}` : '' });
+  
   }}
   required
 />
@@ -254,13 +254,20 @@ function ItemsPage({ token, type, onLogout }) {
 function ReportItem({ token, onLogout }) {
   const location = useLocation();
   const defaultType = location.state?.type || "lost";
-  const [form, setForm] = useState({ title: "", description: "", type: defaultType, location: "", contact: "" });
+
+  const [form, setForm] = useState({
+    title: "",
+    description: "",
+    type: defaultType,
+    location: "",
+    contact: ""
+  });
+
   const [image, setImage] = useState(null);
   const navigate = useNavigate();
 
   const handleChange = (e) => setForm({ ...form, [e.target.name]: e.target.value });
 
-  // ✅ Fetch profile to prefill contact
   useEffect(() => {
     const fetchProfile = async () => {
       try {
@@ -273,32 +280,31 @@ function ReportItem({ token, onLogout }) {
         console.error("❌ Failed to fetch profile", err);
       }
     };
-
     fetchProfile();
   }, [token]);
 
   const handleSubmit = async (e) => {
-  e.preventDefault();
+    e.preventDefault();
 
-  if (!/^\d{13}$/.test(form.contact)) {
-    alert("❌ Please enter a valid 10-digit contact number.");
-    return;
-  }
+    const plainContact = form.contact.replace(/\D/g, '');
+    if (!/^\d{10}$/.test(plainContact)) {
+      alert("❌ Please enter a valid 10-digit contact number.");
+      return;
+    }
 
-  const fd = new FormData();
-  Object.entries(form).forEach(([k, v]) => fd.append(k, v));
-  if (form.type === "found" && image) fd.append("image", image);
+    const fd = new FormData();
+    Object.entries(form).forEach(([k, v]) => fd.append(k, v));
+    if (form.type === "found" && image) fd.append("image", image);
 
-  const res = await fetch(`${API_URL}/api/items`, {
-    method: "POST",
-    headers: { Authorization: `Bearer ${token}` },
-    body: fd,
-  });
+    const res = await fetch(`${API_URL}/api/items`, {
+      method: "POST",
+      headers: { Authorization: `Bearer ${token}` },
+      body: fd,
+    });
 
-  if (res.ok) navigate(`/${form.type}`);
-  else alert("❌ Failed to report item. Supported format jpg, jpeg, png");
-};
-
+    if (res.ok) navigate(`/${form.type}`);
+    else alert("❌ Failed to report item. Supported format jpg, jpeg, png");
+  };
 
   return (
     <div className="container">
@@ -308,7 +314,16 @@ function ReportItem({ token, onLogout }) {
         <input name="title" placeholder="Title" onChange={handleChange} required />
         <textarea name="description" placeholder="Description" onChange={handleChange} required />
         <input name="location" placeholder="Location" onChange={handleChange} required />
-        <input name="contact" placeholder="Contact" value={form.contact} onChange={handleChange} required />
+        <input
+          name="contact"
+          placeholder="Contact"
+          value={form.contact}
+          onChange={(e) => {
+            const digits = e.target.value.replace(/\D/g, '').slice(0, 10);
+            setForm({ ...form, contact: digits ? `+91${digits}` : '' });
+          }}
+          required
+        />
         <select name="type" value={form.type} onChange={handleChange}>
           <option value="lost">Lost</option>
           <option value="found">Found</option>
@@ -321,6 +336,7 @@ function ReportItem({ token, onLogout }) {
     </div>
   );
 }
+
 
 function App() {
   const [token, setToken] = useState(localStorage.getItem("token"));
