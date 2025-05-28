@@ -117,7 +117,7 @@ function RegisterPage() {
       <input type="password" placeholder="Password" onChange={(e) => setPassword(e.target.value)} />
     
       <input
-  placeholder="Contact Number (10-digit)"
+  placeholder="Contact Number"
   value={contact}
   onChange={(e) => setContact(e.target.value.replace(/\D/g, '').slice(0, 10))}
   required
@@ -208,8 +208,8 @@ function ItemsPage({ token, type, onLogout }) {
       <ul>
         {filtered.map((item) => (
           <li key={item._id}>
-            <strong>{item.title}</strong><br />
-            {item.description}<br />
+            <strong>Item_Name:{item.title}</strong><br />
+           Description: {item.description}<br />
             Location: {item.location}<br />
             <span>
   <MdCall style={{ verticalAlign: 'middle' }} />{" "}
@@ -273,7 +273,7 @@ function ReportItem({ token, onLogout }) {
   const handleSubmit = async (e) => {
   e.preventDefault();
 
-  if (!/^\d{10}$/.test(form.contact)) {
+  if (!/^\d{13}$/.test(form.contact)) {
     alert("❌ Please enter a valid 10-digit contact number.");
     return;
   }
