@@ -90,7 +90,7 @@ function RegisterPage() {
   const navigate = useNavigate();
 
   const handleRegister = async () => {
-  if (!/^\d{10}$/.test(contact)) {
+  if (!/^\d{13}$/.test(contact)) {
     alert("❌ Please enter a valid 10-digit contact number.");
     return;
   }
