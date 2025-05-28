@@ -1,5 +1,4 @@
-// server.js
-
+//server.js
 const express = require("express");
 const mongoose = require("mongoose");
 const cors = require("cors");
@@ -26,7 +25,7 @@ cloudinary.config({
   api_secret: process.env.CLOUDINARY_API_SECRET,
 });
 
-// Multer-Cloudinary storage
+// Storage config
 const storage = new CloudinaryStorage({
   cloudinary,
   params: {
@@ -36,6 +35,7 @@ const storage = new CloudinaryStorage({
 });
 const upload = multer({ storage });
 
+// Middleware
 app.use(cors());
 app.use(express.json());
 
@@ -48,15 +48,21 @@ mongoose.connect(uri, {
 })
 .then(() => {
   console.log("✅ Connected to MongoDB Atlas via Mongoose");
-  app.listen(PORT, () => console.log(`🚀 Server running on http://localhost:${PORT}`));
+
+  // Start server **only after successful DB connection**
+  app.listen(PORT, () => {
+    console.log(`🚀 Server running on http://localhost:${PORT}`);
+  });
 })
-.catch((err) => console.error("❌ MongoDB connection error:", err));
+.catch((err) => {
+  console.error("❌ MongoDB connection error:", err);
+});
+
 
 // Auth middleware
 const auth = (req, res, next) => {
   const token = req.headers.authorization?.split(" ")[1];
   if (!token) return res.status(401).json({ error: "Unauthorized" });
-
   try {
     const decoded = jwt.verify(token, JWT_SECRET);
     req.user = decoded;
@@ -67,14 +73,9 @@ const auth = (req, res, next) => {
 };
 
 // Register
+// Add `contact` to register endpoint
 app.post("/api/register", async (req, res) => {
-  let { username, password, contact } = req.body;
-
-  // Prefix +91 if not present
-  if (!contact.startsWith("+91")) {
-    contact = `+91${contact}`;
-  }
-
+  const { username, password, contact } = req.body;
   const hashed = await bcrypt.hash(password, 10);
   try {
     const user = new User({ username, password: hashed, contact });
@@ -84,6 +85,7 @@ app.post("/api/register", async (req, res) => {
     res.status(400).json({ error: "User exists or invalid data" });
   }
 });
+
 
 // Login
 app.post("/api/login", async (req, res) => {
@@ -95,8 +97,6 @@ app.post("/api/login", async (req, res) => {
   const token = jwt.sign({ userId: user._id, username: user.username }, JWT_SECRET);
   res.json({ token });
 });
-
-// Get user profile
 app.get("/api/profile", auth, async (req, res) => {
   const user = await User.findById(req.user.userId).select("username contact");
   res.json(user);
@@ -110,12 +110,8 @@ app.get("/api/items", async (req, res) => {
 
 // Post new item
 app.post("/api/items", auth, upload.single("image"), async (req, res) => {
-  let { title, description, type, location, contact } = req.body;
+  const { title, description, type, location, contact } = req.body;
   const imageUrl = req.file ? req.file.path : null;
-
-  if (!contact.startsWith("+91")) {
-    contact = `+91${contact}`;
-  }
 
   const newItem = new Item({
     title,
