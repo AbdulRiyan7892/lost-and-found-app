@@ -10,7 +10,7 @@ body {
   color: #fff;                                   /* light text for contrast */
   background-color: #005e4e;                    /* fallback dark teal */
 }
-
+ 
 /* Container */
 .container {
   max-width: 700px;
