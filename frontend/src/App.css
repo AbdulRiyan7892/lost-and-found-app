@@ -1,4 +1,8 @@
-  /* Body Styling */
+/* -----------------------------------
+   App.css
+   ----------------------------------- */
+
+/* Body Styling */
 body {
   margin: 0;
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
@@ -7,35 +11,35 @@ body {
   background-position: center;
   background-repeat: no-repeat;
   background-attachment: fixed;
-  color: #fff;                                   /* light text for contrast */
-  background-color: #005e4e;                    /* fallback dark teal */
+  color: #f0f0f0;                   /* light text */
+  background-color: #005e4e;        /* dark teal fallback */
 }
- 
+
 /* Container */
 .container {
   max-width: 700px;
   margin: 40px auto;
   padding: 30px;
-  background: rgba(0, 94, 78, 0.85);             /* semi-opaque dark teal */
+  background: rgba(0, 94, 78, 0.85); /* semi-opaque dark teal */
   border-radius: 20px;
   box-shadow: 0 10px 25px rgba(0, 0, 0, 0.4);
   text-align: center;
   backdrop-filter: blur(4px);
-  color: #f0f0f0;                                /* slightly off-white */
+  color: #f0f0f0;                    /* slightly off-white */
 }
 
 /* Welcome Message */
 .container h2:first-child {
   font-size: 2.4rem;
-  color: #e3a82f;                                /* mustard accent */
+  color: #e3a82f;                    /* mustard accent */
   margin-bottom: 0.5rem;
 }
 
 /* Loading text */
 .loading {
   font-size: 1.2rem;
-  color: #ffb300;                               /* bright amber */
-  margin-top: 20px; 
+  color: #ffb300;                   /* bright amber */
+  margin-top: 20px;
 }
 
 /* Navbar */
@@ -45,11 +49,11 @@ body {
   margin-bottom: 20px;
 }
 
-/* Buttons */
+/* Buttons (Navbar & General) */
 .nav-button,
 button {
-  background: linear-gradient(to right, #d68c1e, #e3a82f);   /* burnt-orange → mustard */
-  color: #003329;                                           /* deep teal text */
+  background: linear-gradient(to right, #d68c1e, #e3a82f); /* burnt-orange → mustard */
+  color: #003329;                                         /* deep-teal text */
   border: none;
   padding: 10px 20px;
   border-radius: 12px;
@@ -84,7 +88,7 @@ button:hover {
   border-radius: 18px;
   font-size: 1.4rem;
   text-decoration: none;
-  color: #003329;                                          /* deep teal text */
+  color: #003329;                                      /* deep-teal text */
   font-weight: bold;
   background: linear-gradient(to right, #d68c1e, #e3a82f);
 }
@@ -94,11 +98,13 @@ button:hover {
 }
 
 /* Form Inputs */
-input, textarea, select {
+input,
+textarea,
+select {
   width: 100%;
   padding: 12px;
   margin-top: 10px;
-  border: 1px solid #e3a82f;                              /* mustard border */
+  border: 1px solid #e3a82f;                           /* mustard border */
   border-radius: 10px;
   font-size: 16px;
   box-sizing: border-box;
@@ -106,20 +112,40 @@ input, textarea, select {
   color: #003329;
 }
 
-/* List */
+/* List Container */
 ul {
   list-style: none;
   padding: 0;
 }
 
-
-
-li strong {
-  color: #005e4e;                                          /* deep teal headings */
+/* Individual List Item */
+li {
+  display: flex;                                       /* side-by-side layout */
+  justify-content: space-between;
+  align-items: flex-start;
+  background-color: rgba(255, 255, 255, 0.95);
+  border-left: 4px solid #d68c1e;                      /* burnt-orange accent */
+  border-radius: 0 10px 10px 0;
+  padding: 20px;
+  margin-bottom: 12px;
+  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
+  gap: 20px;
 }
 
+/* Text Block within each item */
+li .details {
+  flex: 1;                                             /* take remaining space */
+  color: #003329;                                      /* dark-teal text */
+  text-align: left;
+}
+
+li .details strong {
+  color: #005e4e;                                      /* deeper teal for labels */
+}
+
+/* Links inside list items */
 li a {
-  color: #d68c1e;                                          /* burnt-orange links */
+  color: #d68c1e;                                      /* burnt-orange links */
   text-decoration: none;
 }
 
@@ -127,27 +153,11 @@ li a:hover {
   text-decoration: underline;
 }
 
-/* Images in list items */
-
-li {
-  display: flex;                            /* Make content side by side */
-  justify-content: space-between;
-  align-items: center;
-  background-color: rgba(255, 255, 255, 0.95);
-  border-left: 4px solid #d68c1e;
-  border-radius: 0 10px 10px 0;
-  padding: 20px;
-  margin-bottom: 12px;
-  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
-  text-align: left;
-  gap: 20px;
-}
-
+/* Image within each item */
 li img {
-  margin-top: 0;                            /* Reset if there was margin-top */
+  margin: 0;                                           /* remove any extra top margin */
   border-radius: 8px;
   max-width: 150px;
   height: auto;
   object-fit: cover;
 }
-
