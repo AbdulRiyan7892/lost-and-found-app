@@ -1,3 +1,7 @@
+/* -----------------------------------
+   App.css
+   ----------------------------------- */
+
 /* Body Styling */
 body {
   margin: 0;
@@ -10,19 +14,12 @@ body {
   color: #333;
 }
 
-/* Loading text */
-.loading {
-  font-size: 1.2rem;
-  color: #1976d2;
-  margin-top: 20px; 
-}
-
 /* Container */
 .container {
   max-width: 700px;
   margin: 40px auto;
   padding: 30px;
-  background: rgba(255, 255, 255, 0.85); /* Semi-transparent white */
+  background: rgba(255, 255, 255, 0.85);
   border-radius: 20px;
   box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
   text-align: center;
@@ -34,6 +31,13 @@ body {
   font-size: 2.2rem;
   color: #1976d2;
   margin-bottom: 0.5rem;
+}
+
+/* Loading text */
+.loading {
+  font-size: 1.2rem;
+  color: #1976d2;
+  margin-top: 20px; 
 }
 
 /* Navbar */
@@ -87,16 +91,8 @@ button:hover {
   background: linear-gradient(to right, #42a5f5, #7e57c2);
 }
 
-.section-button.lost,
-.section-button.found,
-.section-button.report {
-  background: linear-gradient(to right, #42a5f5, #7e57c2);
-  transition: none;
-}
-
 .section-button:hover {
-  transform: none;
-  background: linear-gradient(to right, #42a5f5, #7e57c2);
+  background: linear-gradient(to right, #1e88e5, #6a1b9a);
 }
 
 /* Form Inputs */
@@ -114,26 +110,51 @@ input, textarea, select {
 ul {
   list-style: none;
   padding: 0;
+  margin: 0;
 }
+
+/* List Item */
 li {
+  display: flex;                 /* side-by-side layout */
+  justify-content: space-between;
+  align-items: flex-start;
   background-color: rgba(255, 255, 255, 0.9);
   border: 1px solid #ddd;
   border-radius: 10px;
   padding: 20px;
   margin-bottom: 12px;
   box-shadow: 0 3px 10px rgba(0, 0, 0, 0.05);
-  text-align: left;
   backdrop-filter: blur(3px);
+  gap: 20px;
+  text-align: left;
 }
 
+/* Text block inside each item */
+li .details {
+  flex: 1;                       /* allow text to grow */
+}
 
+li .details strong {
+  display: block;
+  margin-bottom: 6px;
+  color: #1976d2;
+}
 
+/* Links inside list items */
+li a {
+  color: #1976d2;
+  text-decoration: none;
+}
 
+li a:hover {
+  text-decoration: underline;
+}
+
+/* Image within each item */
 li img {
-  margin-top: 0;                            /* Reset if there was margin-top */
+  margin: 0;                     /* reset any default margins */
   border-radius: 8px;
-  max-width: 100%;
-    border-radius: 8px;
+  max-width: 150px;
   height: auto;
   object-fit: cover;
 }
