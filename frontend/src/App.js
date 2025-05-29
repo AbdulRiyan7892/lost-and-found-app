@@ -191,25 +191,29 @@ function ItemsPage({ token, type, onLogout }) {
       <ul>
         {filtered.map((item) => (
           <li key={item._id}>
-            <strong>{item.title}</strong><br />
-            {item.description}<br />
-            📍 {item.location}<br />
-            <span>
-              <MdCall style={{ verticalAlign: 'middle' }} />{" "}
-              <a href={`tel:${item.contact}`} style={{ color: '#1976d2' }}>
-                {item.contact}
-              </a>
-            </span><br />
+            <strong>Item_Name:{item.title}</strong><br />
+           Description: {item.description}<br />
+           Location:{item.location}<br />
+             <span>
+  <MdCall style={{ verticalAlign: 'middle' }} />{" "}
+  <a
+    href={`tel:+91${item.contact}`}
+   style={{ color: '#1976d2', textDecoration: 'none' }}
+ >
+    +91 {item.contact}  </a>
+</span><br />
             <span>
               <FaWhatsapp style={{ verticalAlign: 'middle' }} />{" "}
               <a
-                href={`https://wa.me/${item.contact.replace(/[^0-9]/g, '')}`}
-                target="_blank"
-                rel="noopener noreferrer"
-                style={{ color: '#25D366' }}
-              >
-                WhatsApp
-              </a>
+ href={`https://wa.me/${item.contact.replace(/[^0-9]/g, '')}`}
+<a
+ href={`https://wa.me/91${item.contact.replace(/[^0-9]/g, '')}`}
+   target="_blank"
+   rel="noopener noreferrer"
+   style={{ color: '#25D366', textDecoration: 'none' }}
+>
+  WhatsApp
+</a>
             </span><br />
             👤 Reporter: {item.reporter}<br />
             {item.imageUrl && <img src={item.imageUrl} width="150" alt="uploaded" />}<br />
