@@ -115,25 +115,25 @@ ul {
   list-style: none;
   padding: 0;
 }
-
 li {
-  display: flex;                            /* Make content side by side */
-  justify-content: space-between;
-  align-items: center;
-  background-color: rgba(255, 255, 255, 0.95);
-  border-left: 4px solid #d68c1e;
-  border-radius: 0 10px 10px 0;
+  background-color: rgba(255, 255, 255, 0.9);
+  border: 1px solid #ddd;
+  border-radius: 10px;
   padding: 20px;
   margin-bottom: 12px;
-  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.05);
   text-align: left;
-  gap: 20px;
+  backdrop-filter: blur(3px);
 }
+
+
+
 
 li img {
   margin-top: 0;                            /* Reset if there was margin-top */
   border-radius: 8px;
-  max-width: 150px;
+  max-width: 100%;
+    border-radius: 8px;
   height: auto;
   object-fit: cover;
 }
