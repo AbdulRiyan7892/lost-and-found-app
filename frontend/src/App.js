@@ -204,10 +204,8 @@ function ItemsPage({ token, type, onLogout }) {
 </span><br />
             <span>
               <FaWhatsapp style={{ verticalAlign: 'middle' }} />{" "}
-              <a
- href={`https://wa.me/${item.contact.replace(/[^0-9]/g, '')}`}
 <a
- href={`https://wa.me/91${item.contact.replace(/[^0-9]/g, '')}`}
+  href={`https://wa.me/91${item.contact.replace(/[^0-9]/g, '')}`}
    target="_blank"
    rel="noopener noreferrer"
    style={{ color: '#25D366', textDecoration: 'none' }}
