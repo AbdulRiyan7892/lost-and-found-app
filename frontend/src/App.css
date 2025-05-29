@@ -7,8 +7,14 @@ body {
   background-position: center;
   background-repeat: no-repeat;
   background-attachment: fixed;
-  color: #fff;                                   /* light text for contrast */
-  background-color: #005e4e;                    /* fallback dark teal */
+  color: #333;
+}
+
+/* Loading text */
+.loading {
+  font-size: 1.2rem;
+  color: #1976d2;
+  margin-top: 20px; 
 }
 
 /* Container */
@@ -16,26 +22,18 @@ body {
   max-width: 700px;
   margin: 40px auto;
   padding: 30px;
-  background: rgba(0, 94, 78, 0.85);             /* semi-opaque dark teal */
+  background: rgba(255, 255, 255, 0.85); /* Semi-transparent white */
   border-radius: 20px;
-  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.4);
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
   text-align: center;
   backdrop-filter: blur(4px);
-  color: #f0f0f0;                                /* slightly off-white */
 }
 
 /* Welcome Message */
 .container h2:first-child {
-  font-size: 2.4rem;
-  color: #e3a82f;                                /* mustard accent */
+  font-size: 2.2rem;
+  color: #1976d2;
   margin-bottom: 0.5rem;
-}
-
-/* Loading text */
-.loading {
-  font-size: 1.2rem;
-  color: #ffb300;                               /* bright amber */
-  margin-top: 20px; 
 }
 
 /* Navbar */
@@ -48,8 +46,8 @@ body {
 /* Buttons */
 .nav-button,
 button {
-  background: linear-gradient(to right, #d68c1e, #e3a82f);   /* burnt-orange → mustard */
-  color: #003329;                                           /* deep teal text */
+  background: linear-gradient(to right, #42a5f5, #7e57c2);
+  color: white;
   border: none;
   padding: 10px 20px;
   border-radius: 12px;
@@ -57,13 +55,13 @@ button {
   font-size: 16px;
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 10px;
   transition: background 0.3s ease, transform 0.2s;
 }
 
 .nav-button:hover,
 button:hover {
-  background: linear-gradient(to right, #e3a82f, #ffbf53);
+  background: linear-gradient(to right, #1e88e5, #6a1b9a);
   transform: scale(1.05);
 }
 
@@ -84,13 +82,21 @@ button:hover {
   border-radius: 18px;
   font-size: 1.4rem;
   text-decoration: none;
-  color: #003329;                                          /* deep teal text */
+  color: white;
   font-weight: bold;
-  background: linear-gradient(to right, #d68c1e, #e3a82f);
+  background: linear-gradient(to right, #42a5f5, #7e57c2);
+}
+
+.section-button.lost,
+.section-button.found,
+.section-button.report {
+  background: linear-gradient(to right, #42a5f5, #7e57c2);
+  transition: none;
 }
 
 .section-button:hover {
-  background: linear-gradient(to right, #e3a82f, #ffbf53);
+  transform: none;
+  background: linear-gradient(to right, #42a5f5, #7e57c2);
 }
 
 /* Form Inputs */
@@ -98,12 +104,10 @@ input, textarea, select {
   width: 100%;
   padding: 12px;
   margin-top: 10px;
-  border: 1px solid #e3a82f;                              /* mustard border */
+  border: 1px solid #ccc;
   border-radius: 10px;
   font-size: 16px;
   box-sizing: border-box;
-  background: rgba(255,255,255,0.9);
-  color: #003329;
 }
 
 /* List */
@@ -113,29 +117,16 @@ ul {
 }
 
 li {
-  background-color: rgba(255, 255, 255, 0.95);
-  border-left: 4px solid #d68c1e;                          /* burnt-orange accent */
-  border-radius: 0 10px 10px 0;
+  background-color: rgba(255, 255, 255, 0.9);
+  border: 1px solid #ddd;
+  border-radius: 10px;
   padding: 20px;
   margin-bottom: 12px;
-  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.05);
   text-align: left;
+  backdrop-filter: blur(3px);
 }
 
-li strong {
-  color: #005e4e;                                          /* deep teal headings */
-}
-
-li a {
-  color: #d68c1e;                                          /* burnt-orange links */
-  text-decoration: none;
-}
-
-li a:hover {
-  text-decoration: underline;
-}
-
-/* Images in list items */
 li img {
   margin-top: 10px;
   border-radius: 8px;
