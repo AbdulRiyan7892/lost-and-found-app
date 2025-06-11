@@ -60,10 +60,10 @@ function LoginPage({ setToken }) {
 
   return (
     <div className="container">
-      <h2>Malnad College Of Engineering Hassan</h2>
+      <h2>Malnad College of Engineering, Hassan</h2>
       <h2>Welcome to Lost & Found Portal</h2>
       <p style={{ color: '#555', marginBottom: '1.5rem' }}>
-        Please login to continue and help keep our campus organized!
+        Please login to continue... and help to keep our campus organized!
       </p>
       {loading ? (
         <div className="loading">🔄 Logging in, please wait...</div>
